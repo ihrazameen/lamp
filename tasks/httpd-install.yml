@@ -1,0 +1,35 @@
+---
+- name: 'httpd/php - Installation'
+  yum:
+    name:
+      - httpd
+      - php
+      - php-mysql
+    state: present
+ 
+- name: 'httpd/php - Creating Virtualhost'
+  template:
+    src: virtualhost.j2
+    dest: /etc/httpd/conf.d/{{domain}}.conf
+      
+- name: 'httpd/php - Creating Documentroot'
+  file:
+    path: /var/www/html/{{domain}}
+    state: directory  
+      
+- name: 'httpd/php - Creating info.html'
+  copy:
+    src: info.html
+    dest: /var/www/html/{{domain}}/info.html      
+      
+- name: 'httpd/php - Creating info.php'
+  copy:
+    src: info.php
+    dest: /var/www/html/{{domain}}/info.php
+
+- name: 'httpd/php - Restarting/Enabling'
+  service:
+    name: httpd
+    state: restarted
+    enabled: yes
+
